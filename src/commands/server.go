@@ -1,0 +1,132 @@
+package commands
+
+import (
+	"MoP/src/controllers"
+	"fmt"
+	"path/filepath"
+	"strconv"
+	"strings"
+)
+
+func ShowHandler(command []string, agent string) {
+	if len(command) > 1 {
+		switch command[1] {
+		// executa a captura de agentes do pacote controllers
+		case "agents":
+			controllers.GetAgents()
+		case "history":
+			if agent != "" {
+				controllers.GetHistory(agent, command)
+			}
+		default:
+			fmt.Println()
+			fmt.Printf("The parameter %s doesn't exists!\n", command[1])
+			fmt.Println()
+		}
+	} else {
+		fmt.Println()
+		fmt.Println("To list the agents, use: show agents")
+		fmt.Println()
+	}
+}
+
+func SetAlias(command []string, agent string) {
+	if len(command) > 1 {
+		agentID, _ := strconv.Atoi(agent)
+		resp := controllers.ChangeAlias(agentID, command[1])
+		fmt.Println(resp)
+	} else {
+		fmt.Println()
+		fmt.Println("You need to inform an alias!")
+		fmt.Println()
+	}
+}
+
+func SelectHandler(command []string) string {
+	if len(command) > 1 {
+		agentID, _ := strconv.Atoi(command[1])
+		// valida se o agente existe com o pacote controllers
+		if controllers.CheckAgents(uint64(agentID)) {
+			selectedAgent := command[1]
+			return selectedAgent
+		} else {
+			fmt.Println("\nThe selected agent doesn't exists!")
+			fmt.Println("To list the agents, use: show agents")
+			fmt.Println()
+			return ""
+		}
+
+	} else {
+		return ""
+	}
+}
+
+func CommandHandler(agent string, command string) {
+	command = strings.TrimSuffix(command, "\n")
+	if len(command) > 0 {
+		agentID, _ := strconv.Atoi(agent)
+		controllers.SendCommand(uint64(agentID), command)
+	}
+}
+
+func UploadFile(agent string, command []string) {
+	if len(command) > 1 {
+		agentID, _ := strconv.Atoi(agent)
+		fileName := filepath.Base(command[1])
+		err := controllers.SendFile(uint64(agentID), command[1], fileName)
+		if err != nil {
+			fmt.Println()
+			fmt.Println("Error to upload the file: ", err)
+			fmt.Println()
+		}
+	} else {
+		fmt.Println()
+		fmt.Println("You need to inform the path of the file!")
+		fmt.Println()
+	}
+}
+
+func DownloadFile(agent string, command []string) {
+	if len(command) > 1 {
+		agentID, _ := strconv.Atoi(agent)
+		fileName := filepath.Base(command[1])
+		err := controllers.ReqFile(uint64(agentID), command[1], fileName)
+		if err != nil {
+			fmt.Println()
+			fmt.Println("Error to download the file: ", err)
+			fmt.Println()
+		}
+
+	} else {
+		fmt.Println()
+		fmt.Println("You need to inform the path of the file!")
+		fmt.Println()
+	}
+}
+
+
+func Help() string {
+	help := `
+	SERVER COMMANDS:
+
+		alias <alias>: set an alias to an agent when one that agent is selected.
+	
+		show agents: list the active agents to interact.
+			
+		select <id>: select an agent by id to interact.
+
+
+	AGENT COMMANDS:
+
+		download <filepath>: download a file from agent machine.
+
+		show history: list the command history when one agent is selected.
+
+		sleep <time seconds>: change the sleep time before send response to server (default 10).
+
+		upload <file path>: send a file to agent machine.
+		
+		`
+	return help
+
+}
