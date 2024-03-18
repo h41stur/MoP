@@ -15,6 +15,11 @@ Before building the server and agent, make the appropriate configurations in the
 
 It is also necessary to start the MySQL database Docker by executing the sql/start-db.sh script.
 
+```bash
+./start-db.sh
+docker exec -it mysql mysql -e 'source /scripts/sql.sql'
+```
+
 ## Building Agents
 
 To build an agent to Windows machines:
