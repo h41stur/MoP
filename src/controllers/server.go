@@ -157,7 +157,7 @@ func SendFile(ID uint64, filePath string, fileName string) error {
 	return nil
 }
 
-func ReqFile(ID uint64, filePath string, fileName string) error {
+func ReqFile(ID uint64, filePath string, fileName string, action string) error {
 	db, err := db.Connect()
 	if err != nil {
 		return err
@@ -165,7 +165,7 @@ func ReqFile(ID uint64, filePath string, fileName string) error {
 	defer db.Close()
 
 	repo := repos.AgentRepo(db)
-	err = repo.FileRequest(ID, "MoP", fileName, filePath, "download")
+	err = repo.FileRequest(ID, "MoP", fileName, filePath, action)
 	if err != nil {
 		return err
 	}

