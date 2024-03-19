@@ -50,6 +50,8 @@ GOOS=linux go build agent.go
 
 		download <filepath>: download a file from agent machine.
 
+		screenshot: take a screenshot from agent machine.
+
 		show history: list the command history when one agent is selected.
 
 		sleep <time seconds>: change the sleep time before send response to server (default 10).
