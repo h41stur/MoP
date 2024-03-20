@@ -100,6 +100,12 @@ func cli() {
 				} else {
 					fmt.Println("You need to select an agent!")
 				}
+			case "persist":
+				if selectedAgent != "" {
+					commands.CommandHandler(selectedAgent, command)
+				} else {
+					fmt.Println("You need to select an agent!")
+				}
 			default:
 				if selectedAgent != "" {
 					commands.CommandHandler(selectedAgent, command)
