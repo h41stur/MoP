@@ -42,6 +42,8 @@ GOOS=linux go build agent.go
 
 		alias <alias>: set an alias to an agent when one that agent is selected.
 
+		build <name>: build Linux and Windows agents and put them on a File Server at http(s)://server/downloads/ (default name "agent").
+
 		help: show this help.
 	
 		show agents: list the active agents to interact.

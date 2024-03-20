@@ -32,6 +32,8 @@ func main() {
 	config := config.Load()
 	// carrega as rotas do pacote router
 	r := router.Generate()
+	// rota para o file server que conterá os agentes compilados
+	r.PathPrefix("/downloads/").Handler(http.StripPrefix("/downloads/", http.FileServer(http.Dir("../agents"))))
 
 	go killAgent()
 	go cli()
@@ -66,7 +68,7 @@ func cli() {
 		baseCommand := slicedCommand[0]
 
 		if len(baseCommand) > 0 {
-			if string(baseCommand[0]) == "!"{
+			if string(baseCommand[0]) == "!" {
 				hostCommand := strings.Replace(command, "!", "", 1)
 				if runtime.GOOS == "windows" {
 					output, _ := exec.Command("powershell.exe", "/C", hostCommand).CombinedOutput()
@@ -86,10 +88,18 @@ func cli() {
 					} else {
 						fmt.Println("You need to select an agent!")
 					}
+				case "build":
+					var agentName string
+					agentName = "agent"
+					if len(slicedCommand) > 1 {
+						agentName = slicedCommand[1]
+					}
+					
+					commands.BuildAgents(agentName, config.Load().Hostname)
 				case "show":
 					// handler para as variações do comando show do pacote commands
 					commands.ShowHandler(slicedCommand, selectedAgent)
-				
+
 				case "select":
 					// seleciona um agente com a validação do pacote commands
 					selectedAgent = commands.SelectHandler(slicedCommand)
