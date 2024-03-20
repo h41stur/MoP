@@ -28,19 +28,12 @@ func CheckDB() {
 	if err != nil {
 		fmt.Println(`
 Database is down!
-
 If "sudo docker ps -a" command don't show "MoPDB" container exited
-
 Run the command:
-
 "sql/create-db.sh"
-
 If "sudo docker ps -a" command show "MoPDB" container exited
-
 Run the command:
-
-sudo docker start MoPDB
-`)
+sudo docker start MoPDB`)
 		os.Exit(0)
 	}
 	defer db.Close()
@@ -54,9 +47,7 @@ sudo docker start MoPDB
 			fmt.Printf("Table %s is not there!\n", table)
 			fmt.Println(`
 Run the command:
-
-sudo docker exec -it MoPDB mysql -e 'source /scripts/sql.sql'
-`)
+sudo docker exec -it MoPDB mysql -e 'source /scripts/sql.sql'`)
 			os.Exit(0)
 		}
 	}

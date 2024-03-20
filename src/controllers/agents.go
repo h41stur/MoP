@@ -3,7 +3,6 @@ package controllers
 
 import (
 	"MoP/src/db"
-	"MoP/src/messages"
 	"MoP/src/models"
 	"MoP/src/repos"
 	"MoP/src/responses"
@@ -146,7 +145,6 @@ func AgentAlive(w http.ResponseWriter, r *http.Request) {
 
 	responses.Response(w, http.StatusOK)
 
-	
 }
 
 func DeleteFile(w http.ResponseWriter, r *http.Request) {
@@ -199,7 +197,7 @@ func PostCommand(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// cria uma variável do tipo PostCommandMessage pra ser preenchida a partir do pacote messages
-	var command messages.PostCommandMessage
+	var command models.PostCommandMessage
 	if err = json.Unmarshal(requestBody, &command); err != nil {
 		responses.Response(w, http.StatusBadRequest)
 		return
@@ -224,4 +222,3 @@ func PostCommand(w http.ResponseWriter, r *http.Request) {
 	responses.HandleCommand(command)
 	responses.Response(w, http.StatusCreated)
 }
-

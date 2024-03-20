@@ -2,7 +2,7 @@ package main
 
 import (
 	"MoP/src/commands"
-	"MoP/src/messages"
+	"MoP/src/models"
 	"MoP/src/requests"
 	"crypto/md5"
 	"encoding/hex"
@@ -16,7 +16,7 @@ import (
 
 var (
 	Name        string
-	Agent       messages.NewAgent
+	Agent       models.NewAgent
 	TimeToSleep = 10
 )
 
@@ -41,7 +41,7 @@ func main() {
 
 }
 
-func imAlive(agent messages.NewAgent) {
+func imAlive(agent models.NewAgent) {
 
 	for {
 		requests.AliveRequest(agent.Name)
@@ -51,7 +51,7 @@ func imAlive(agent messages.NewAgent) {
 
 }
 
-func generateName() messages.NewAgent {
+func generateName() models.NewAgent {
 
 	getUser, err := user.Current()
 	if err != nil {

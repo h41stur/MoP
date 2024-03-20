@@ -2,7 +2,6 @@
 package responses
 
 import (
-	"MoP/src/messages"
 	"MoP/src/models"
 	"encoding/base64"
 	"fmt"
@@ -42,7 +41,7 @@ func HandleNewAgent(agent models.Agent) {
 	PrintAgent(agent)
 }
 
-func HandleCommand(resp messages.PostCommandMessage) {
+func HandleCommand(resp models.PostCommandMessage) {
 	response, _ := base64.StdEncoding.DecodeString(resp.Resp)
 	fmt.Println()
 	fmt.Println("Command: ", resp.Command)

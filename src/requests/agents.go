@@ -2,7 +2,6 @@ package requests
 
 import (
 	"MoP/src/config"
-	"MoP/src/messages"
 	"MoP/src/models"
 	"bytes"
 	"encoding/json"
@@ -13,7 +12,7 @@ import (
 
 var conf = config.Load()
 
-func Presentation(agent messages.NewAgent) {
+func Presentation(agent models.NewAgent) {
 
 	url := conf.Hostname + "/agents"
 
@@ -34,7 +33,7 @@ func Presentation(agent messages.NewAgent) {
 
 }
 
-func GetFile(agent messages.NewAgent) []models.File {
+func GetFile(agent models.NewAgent) []models.File {
 
 	url := conf.Hostname + "/agents/" + agent.Name + "/fl"
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -62,7 +61,7 @@ func GetFile(agent messages.NewAgent) []models.File {
 	return files
 }
 
-func DeleteFile(agent messages.NewAgent, fileID int) {
+func DeleteFile(agent models.NewAgent, fileID int) {
 
 	url := conf.Hostname + "/agents/" + agent.Name + "/fl/" + strconv.Itoa(fileID)
 	req, _ := http.NewRequest(http.MethodDelete, url, nil)
@@ -74,7 +73,7 @@ func DeleteFile(agent messages.NewAgent, fileID int) {
 	defer resp.Body.Close()
 }
 
-func GetCommand(agent messages.NewAgent) []models.Command {
+func GetCommand(agent models.NewAgent) []models.Command {
 
 	url := conf.Hostname + "/agents/" + agent.Name + "/com"
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -117,11 +116,11 @@ func AliveRequest(agentName string) {
 	defer resp.Body.Close()
 }
 
-func PostCommand(agentID int, command string, resp string, agent messages.NewAgent) {
+func PostCommand(agentID int, command string, resp string, agent models.NewAgent) {
 
 	url := conf.Hostname + "/agents/" + agent.Name + "/com"
 
-	body := &messages.PostCommandMessage{
+	body := &models.PostCommandMessage{
 		ID:      agentID,
 		Command: command,
 		Resp:    resp,
@@ -137,7 +136,7 @@ func PostCommand(agentID int, command string, resp string, agent messages.NewAge
 
 }
 
-func PostFile(agent messages.NewAgent, file models.File) {
+func PostFile(agent models.NewAgent, file models.File) {
 	url := conf.Hostname + "/agents/" + agent.Name + "/fl"
 
 	body := &models.File{

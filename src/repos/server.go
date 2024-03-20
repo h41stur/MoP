@@ -2,7 +2,6 @@
 package repos
 
 import (
-	"MoP/src/messages"
 	"MoP/src/models"
 	"database/sql"
 	"strconv"
@@ -16,7 +15,7 @@ func AgentRepo(db *sql.DB) *fieldAgents {
 	return &fieldAgents{db}
 }
 
-func (repo fieldAgents) History(ID string, command []string) ([]messages.PostCommandMessage, error) {
+func (repo fieldAgents) History(ID string, command []string) ([]models.PostCommandMessage, error) {
 	agentID, _ := strconv.Atoi(ID)
 	limit := 2
 
@@ -35,9 +34,9 @@ func (repo fieldAgents) History(ID string, command []string) ([]messages.PostCom
 	}
 	defer lines.Close()
 
-	var commands []messages.PostCommandMessage
+	var commands []models.PostCommandMessage
 	for lines.Next() {
-		var command messages.PostCommandMessage
+		var command models.PostCommandMessage
 
 		if err = lines.Scan(
 			&command.Command,
