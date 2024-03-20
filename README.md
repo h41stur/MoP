@@ -19,19 +19,34 @@ It is also necessary to start the MySQL database Docker by executing the sql/sta
 ./create-db.sh
 ```
 
+```bash
+go build server/MoP.go
+cd server
+./Mop
+```
+
+
 ## Building Agents
 
-To build an agent to Windows machines:
+To build an agent to Windows machines on server terminal:
 
 ```bash
 GOOS=windows go build -ldflags -H=windowsgui agent.go
 ```
 
-To build an agent to Linux machines:
+To build an agent to Linux machines on server terminal:
 
 ```bash
 GOOS=linux go build agent.go
 ```
+
+To build agents to Linux and Windows machines on MoP terminal:
+
+```bash
+MoP> build <name>
+```
+
+This command will auto build the agents and put them ina a file server at http(s)://server/downloads/  (default name "agent").
 
 ## Commands
 
