@@ -3,6 +3,7 @@ package controllers
 
 import (
 	"MoP/src/db"
+	"MoP/src/messages"
 	"MoP/src/repos"
 	"MoP/src/responses"
 	"encoding/base64"
@@ -14,6 +15,7 @@ import (
 func GetHistory(agent string, command []string) {
 	db, err := db.Connect()
 	if err != nil {
+		messages.ErrorMessage("connect to DB", err)
 		return
 	}
 	defer db.Close()
@@ -21,7 +23,7 @@ func GetHistory(agent string, command []string) {
 	repo := repos.AgentRepo(db)
 	hist, err := repo.History(agent, command)
 	if err != nil {
-		fmt.Println(err)
+		messages.ErrorMessage("select the agent", err)
 		return
 	}
 
@@ -33,7 +35,8 @@ func GetHistory(agent string, command []string) {
 func ChangeAlias(agentID int, alias string) string {
 	db, err := db.Connect()
 	if err != nil {
-		return "Error to connect to database!"
+		messages.ErrorMessage("connect to DB", err)
+		return ""
 	}
 	defer db.Close()
 
@@ -41,16 +44,18 @@ func ChangeAlias(agentID int, alias string) string {
 	err = repo.UpdateAlias(agentID, alias)
 	if err != nil {
 		fmt.Println(err)
-		return "Error to update alias!"
+		messages.ErrorMessage("update alias", err)
+		return ""
 	}
 
-	return fmt.Sprintf("\nAlias from Agent %d updated to %s!\n", agentID, alias)
+	return fmt.Sprintf("\n[+] Alias from Agent %d updated to %s!\n", agentID, alias)
 
 }
 
 func GetAgents() {
 	db, err := db.Connect()
 	if err != nil {
+		messages.ErrorMessage("connect to DB", err)
 		return
 	}
 	defer db.Close()
@@ -58,6 +63,7 @@ func GetAgents() {
 	repo := repos.AgentRepo(db)
 	agents, err := repo.Search()
 	if err != nil {
+		messages.ErrorMessage("search the agent", err)
 		return
 	}
 
@@ -67,6 +73,7 @@ func GetAgents() {
 func CheckAgents(agentID uint64) bool {
 	db, err := db.Connect()
 	if err != nil {
+		messages.ErrorMessage("connect to DB", err)
 		return false
 	}
 	defer db.Close()
@@ -74,6 +81,7 @@ func CheckAgents(agentID uint64) bool {
 	repo := repos.AgentRepo(db)
 	agent, err := repo.CheckAgent(agentID)
 	if err != nil {
+		messages.ErrorMessage("check the agent", err)
 		return false
 	}
 
@@ -83,6 +91,7 @@ func CheckAgents(agentID uint64) bool {
 func AgentsToKill() []int {
 	db, err := db.Connect()
 	if err != nil {
+		messages.ErrorMessage("connect to DB", err)
 		return nil
 	}
 	defer db.Close()
@@ -90,6 +99,7 @@ func AgentsToKill() []int {
 	repo := repos.AgentRepo(db)
 	agents, err := repo.SearchAgentTimeCreated()
 	if err != nil {
+		messages.ErrorMessage("check the agent", err)
 		return nil
 	}
 
@@ -109,22 +119,25 @@ func AgentsToKill() []int {
 func KillAgent(ID int) string {
 	db, err := db.Connect()
 	if err != nil {
-		return fmt.Sprintf("Error to connect to DB: %s", err)
+		messages.ErrorMessage("connect to DB", err)
+		return ""
 	}
 	defer db.Close()
 
 	repo := repos.AgentRepo(db)
 	err = repo.KillAgent(ID)
 	if err != nil {
-		return fmt.Sprintf("Error to kill agent %d: %s", ID, err)
+		messages.ErrorMessage("kill agent", err)
+		return ""
 	}
 
-	return fmt.Sprintf("\nAgent %d killed due 10 minutes whothout communication!", ID)
+	return fmt.Sprintf("\n[!] Agent %d killed due 10 minutes whothout communication!", ID)
 }
 
 func SendCommand(ID uint64, command string) {
 	db, err := db.Connect()
 	if err != nil {
+		messages.ErrorMessage("connect to DB", err)
 		return
 	}
 	defer db.Close()

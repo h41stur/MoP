@@ -2,6 +2,7 @@
 package repos
 
 import (
+	"MoP/src/messages"
 	"MoP/src/models"
 	"database/sql"
 	"strconv"
@@ -204,6 +205,7 @@ func (repo fieldAgents) Command(ID uint64, command string) {
 	var agent models.Agent
 	agent, err := repo.SearchByID(ID)
 	if err != nil {
+		messages.ErrorMessage("search agent", err)
 		return
 	}
 
@@ -211,12 +213,14 @@ func (repo fieldAgents) Command(ID uint64, command string) {
 		"insert into commands (agent_id, name, command) values (?, ?, ?)",
 	)
 	if err != nil {
+		messages.ErrorMessage("input command in DB", err)
 		return
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(agent.ID, agent.Name, command)
 	if err != nil {
+		messages.ErrorMessage("input command in DB", err)
 		return
 	}
 

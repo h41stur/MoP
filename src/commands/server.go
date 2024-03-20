@@ -2,6 +2,7 @@ package commands
 
 import (
 	"MoP/src/controllers"
+	"MoP/src/messages"
 	"fmt"
 	"path/filepath"
 	"strconv"
@@ -77,7 +78,7 @@ func UploadFile(agent string, command []string) {
 		err := controllers.SendFile(uint64(agentID), command[1], fileName)
 		if err != nil {
 			fmt.Println()
-			fmt.Println("Error to upload the file: ", err)
+			
 			fmt.Println()
 		}
 	} else {
@@ -94,7 +95,7 @@ func DownloadFile(agent string, command []string) {
 		err := controllers.ReqFile(uint64(agentID), command[1], fileName, "download")
 		if err != nil {
 			fmt.Println()
-			fmt.Println("Error to download the file: ", err)
+			messages.ErrorMessage("download the file", err)
 			fmt.Println()
 		}
 

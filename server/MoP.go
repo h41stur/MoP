@@ -79,9 +79,6 @@ func cli() {
 				switch baseCommand {
 				case "help":
 					fmt.Println(commands.Help())
-				case "show":
-					// handler para as variações do comando show do pacote commands
-					commands.ShowHandler(slicedCommand, selectedAgent)
 				case "alias":
 					// handler para as variações do comando show do pacote commands
 					if selectedAgent != "" {
@@ -89,6 +86,10 @@ func cli() {
 					} else {
 						fmt.Println("You need to select an agent!")
 					}
+				case "show":
+					// handler para as variações do comando show do pacote commands
+					commands.ShowHandler(slicedCommand, selectedAgent)
+				
 				case "select":
 					// seleciona um agente com a validação do pacote commands
 					selectedAgent = commands.SelectHandler(slicedCommand)
