@@ -2,7 +2,7 @@
 
 mkdir -p mysql
 
-sudo docker run --name mysql -d \
+sudo docker run --name MoPDB -d \
     -p 3306:3306 \
     -e MYSQL_ALLOW_EMPTY_PASSWORD=1 \
     -e TZ=America/Sao_Paulo \
@@ -14,7 +14,7 @@ echo "\nStarting db..."
 
 sleep 20
 
-sudo docker exec -it mysql mysql -e 'source /scripts/sql.sql'
+sudo docker exec -it MoPDB mysql -e 'source /scripts/sql.sql'
 
 echo "\nDone!\n"
 

@@ -4,6 +4,7 @@ import (
 	"MoP/src/commands"
 	"MoP/src/config"
 	"MoP/src/controllers"
+	"MoP/src/db"
 	"MoP/src/middlewares"
 	"MoP/src/router"
 	"bufio"
@@ -21,6 +22,10 @@ var (
 	term          = "MoP> "
 	selectedAgent = ""
 )
+
+func init() {
+	db.CheckDB()
+}
 
 func main() {
 	// carrega as configs
