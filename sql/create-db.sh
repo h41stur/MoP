@@ -10,5 +10,11 @@ sudo docker run --name mysql -d \
     -v ./sql.sql:/scripts/sql.sql \
     mysql:latest
 
-#sudo docker exec -it mysql mysql -e 'source /scripts/sql.sql'
+echo "\nStarting db..."
+
+sleep 20
+
+sudo docker exec -it mysql mysql -e 'source /scripts/sql.sql'
+
+echo "\nDone!\n"
 
