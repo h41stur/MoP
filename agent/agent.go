@@ -23,8 +23,6 @@ var (
 func init() {
 	Agent := generateName()
 	requests.Presentation(Agent)
-	// fileName := filepath.Base(os.Args[0])
-	// fmt.Println(fileName)
 
 }
 

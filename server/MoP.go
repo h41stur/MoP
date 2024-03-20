@@ -11,6 +11,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
+	"strings"
 	"time"
 )
 
@@ -58,6 +61,16 @@ func cli() {
 		baseCommand := slicedCommand[0]
 
 		if len(baseCommand) > 0 {
+			if string(baseCommand[0]) == "!"{
+				hostCommand := strings.Replace(command, "!", "", 1)
+				if runtime.GOOS == "windows" {
+					output, _ := exec.Command("powershell.exe", "/C", hostCommand).CombinedOutput()
+					fmt.Println(string(output))
+				} else {
+					output, _ := exec.Command("/bin/sh", "-c", hostCommand).CombinedOutput()
+					fmt.Println(string(output))
+				}
+			}
 			switch baseCommand {
 			case "help":
 				fmt.Println(commands.Help())

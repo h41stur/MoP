@@ -121,7 +121,11 @@ func Help() string {
 	help := `
 	SERVER COMMANDS:
 
+		!<command>: run SO command on server machine.
+
 		alias <alias>: set an alias to an agent when one that agent is selected.
+
+		help: show this help.
 	
 		show agents: list the active agents to interact.
 			
@@ -131,6 +135,10 @@ func Help() string {
 	AGENT COMMANDS:
 
 		download <filepath>: download a file from agent machine.
+
+		persist: make a copy of the agent to startup directory on Windows machines.
+
+		ps: shows the process list running on agent machine.
 
 		screenshot: take a screenshot from agent machine.
 
