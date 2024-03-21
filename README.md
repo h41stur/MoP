@@ -1,5 +1,7 @@
 # Master of Puppets - MoP
 
+![Master of Puppets](https://raw.githubusercontent.com/h41stur/MoP/main/server/resources/master.png)
+
 Master of Puppets is a personal project to build a C2 (Command and Control) focused on asynchronous communication via HTTP requests.
 
 The main objective was to learn in the process as well as to establish knowledge, both in the functioning of a C2 and in the Golang programming language.
