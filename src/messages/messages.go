@@ -26,6 +26,11 @@ func Banner(hostname string) {
 }
 
 func ErrorMessage(action string, err error) {
-	msg := fmt.Sprintf("[!] Error to %s: %s", action, err)
-	fmt.Println(msg)
+	RedBold.Printf("\n\n[!] Error to %s: %s\n", action, err)
+	fmt.Println()
+}
+
+func SelectAgentMessage() {
+	RedBold.Println("\nYou need to select an agent first!")
+	fmt.Println()
 }

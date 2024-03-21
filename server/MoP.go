@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	term          = fmt.Sprintf("[[Master of Puppets %s ]]>>> ", config.Load().Hostname)
+	term          = fmt.Sprintf("[[ Master of Puppets %s ]]>>> ", config.Load().Hostname)
 	selectedAgent = ""
 )
 
@@ -93,7 +93,7 @@ func cli() {
 					if selectedAgent != "" {
 						commands.SetAlias(slicedCommand, selectedAgent)
 					} else {
-						fmt.Println("You need to select an agent!")
+						messages.SelectAgentMessage()
 					}
 				case "build":
 					var agentName string
@@ -111,42 +111,42 @@ func cli() {
 					// seleciona um agente com a validação do pacote commands
 					selectedAgent = commands.SelectHandler(slicedCommand)
 					if selectedAgent != "" {
-						term = fmt.Sprintf("[[Agent %s]]>># ", selectedAgent)
+						term = fmt.Sprintf("[[ Agent %s ]]>># ", selectedAgent)
 					} else {
-						term = fmt.Sprintf("[[Master of Puppets %s ]]>>> ", config.Load().Hostname)
+						term = fmt.Sprintf("[[ Master of Puppets %s ]]>>> ", config.Load().Hostname)
 					}
 				case "upload":
 					if selectedAgent != "" {
 						commands.UploadFile(selectedAgent, slicedCommand)
 						commands.CommandHandler(selectedAgent, command)
 					} else {
-						fmt.Println("You need to select an agent!")
+						messages.SelectAgentMessage()
 					}
 				case "download":
 					if selectedAgent != "" {
 						commands.DownloadFile(selectedAgent, slicedCommand)
 						commands.CommandHandler(selectedAgent, command)
 					} else {
-						fmt.Println("You need to select an agent!")
+						messages.SelectAgentMessage()
 					}
 				case "screenshot":
 					if selectedAgent != "" {
 						commands.TakeScrenshot(selectedAgent, slicedCommand)
 						commands.CommandHandler(selectedAgent, command)
 					} else {
-						fmt.Println("You need to select an agent!")
+						messages.SelectAgentMessage()
 					}
 				case "persist":
 					if selectedAgent != "" {
 						commands.CommandHandler(selectedAgent, command)
 					} else {
-						fmt.Println("You need to select an agent!")
+						messages.SelectAgentMessage()
 					}
 				default:
 					if selectedAgent != "" {
 						commands.CommandHandler(selectedAgent, command)
 					} else {
-						fmt.Println("You need to select an agent!")
+						messages.SelectAgentMessage()
 					}
 
 				}
