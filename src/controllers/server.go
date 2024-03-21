@@ -107,7 +107,7 @@ func AgentsToKill() []int {
 	for _, agent := range agents {
 		tn := time.Now()
 		td := tn.Sub(agent.CreatedAt).Minutes()
-		if td > 10 {
+		if td > 5 {
 			agetnsToKill = append(agetnsToKill, int(agent.ID))
 		}
 		

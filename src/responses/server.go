@@ -2,6 +2,7 @@
 package responses
 
 import (
+	"MoP/src/messages"
 	"MoP/src/models"
 	"encoding/base64"
 	"fmt"
@@ -37,7 +38,7 @@ func PrintAgent(agent models.Agent) {
 }
 
 func HandleNewAgent(agent models.Agent) {
-	fmt.Println("New agent connected:")
+	messages.GreenBold.Println("\n\nNew agent connected:")
 	PrintAgent(agent)
 }
 
@@ -46,4 +47,5 @@ func HandleCommand(resp models.PostCommandMessage) {
 	fmt.Println()
 	fmt.Println("Command: ", resp.Command)
 	fmt.Println("Response: \n\n", string(response))
+	fmt.Println()
 }
