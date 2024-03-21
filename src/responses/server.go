@@ -42,9 +42,10 @@ func HandleNewAgent(agent models.Agent) {
 	PrintAgent(agent)
 }
 
-func HandleCommand(resp models.PostCommandMessage) {
+func HandleCommand(resp models.PostCommandMessage, agentID int) {
 	response, _ := base64.StdEncoding.DecodeString(resp.Resp)
 	fmt.Println()
+	messages.GreenBold.Println("\nAgent: ", agentID)
 	fmt.Println("Command: ", resp.Command)
 	fmt.Println("Response: \n\n", string(response))
 	fmt.Println()

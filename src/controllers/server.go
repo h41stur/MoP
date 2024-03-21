@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -20,6 +21,8 @@ func GetHistory(agent string, command []string) {
 	}
 	defer db.Close()
 
+	agentID, _ := strconv.Atoi(agent)
+
 	repo := repos.AgentRepo(db)
 	hist, err := repo.History(agent, command)
 	if err != nil {
@@ -28,7 +31,7 @@ func GetHistory(agent string, command []string) {
 	}
 
 	for _, com := range hist {
-		responses.HandleCommand(com)
+		responses.HandleCommand(com, agentID)
 	}
 }
 
@@ -131,7 +134,7 @@ func KillAgent(ID int) string {
 		return ""
 	}
 
-	return fmt.Sprintf("\n[!] Agent %d killed due 10 minutes whothout communication!", ID)
+	return fmt.Sprintf("\n\n[!] Agent %d killed due 5 minutes whothout sending requests!", ID)
 }
 
 func SendCommand(ID uint64, command string) {

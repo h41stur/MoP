@@ -213,12 +213,12 @@ func PostCommand(w http.ResponseWriter, r *http.Request) {
 
 	// cria o repositório a partir do pacote repo para executar os comando SQL
 	repo := repos.NewAgentRepo(db)
-	err = repo.PostCommand(command.ID, command.Resp)
+	agentID, err := repo.PostCommand(command.ID, command.Resp)
 	if err != nil {
 		responses.Response(w, http.StatusInternalServerError)
 		return
 	}
 
-	responses.HandleCommand(command)
+	responses.HandleCommand(command, agentID)
 	responses.Response(w, http.StatusCreated)
 }

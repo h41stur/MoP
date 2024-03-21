@@ -4,6 +4,7 @@ package repos
 import (
 	"MoP/src/models"
 	"database/sql"
+	"fmt"
 )
 
 type agents struct {
@@ -165,21 +166,41 @@ func (repo agents) UpdateAlive(agentName string) error {
 	return nil
 }
 
-func (repo agents) PostCommand(ID int, resp string) error {
+func (repo agents) PostCommand(ID int, resp string) (int, error) {
 	statement, err := repo.db.Prepare(
 		"update commands set response = ? where id = ?",
 	)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(resp, ID)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	lines, err := repo.db.Query(
+		"select agent_id from commands where id = ?",
+		ID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	defer lines.Close()
+
+	var agentID int
+	for lines.Next() {
+		
+		if err = lines.Scan(
+			&agentID,
+		); err != nil {
+			fmt.Println(err)
+			return 0, err
+		}
+	}
+
+	return agentID, nil
 
 }
 
