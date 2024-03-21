@@ -38,7 +38,7 @@ func PrintAgent(agent models.Agent) {
 }
 
 func HandleNewAgent(agent models.Agent) {
-	messages.GreenBold.Println("\n\nNew agent connected:")
+	messages.GreenBold.Println("\n\nAgent connected:")
 	PrintAgent(agent)
 }
 

@@ -151,7 +151,7 @@ func (repo agents) GetCommand(agentName string) ([]models.Command, error) {
 
 func (repo agents) UpdateAlive(agentName string) error {
 	statement, err := repo.db.Prepare(
-		"update agents set created = current_timestamp() where name = ?",
+		"update agents set created = current_timestamp(), active = 1 where name = ?",
 	)
 	if err != nil {
 		return err
