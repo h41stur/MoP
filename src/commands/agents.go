@@ -235,8 +235,8 @@ func listProcess() (processes string) {
 }
 
 func whoami() string {
-	resp, _ := user.Current()
-	b64 := middlewares.B64Encode(resp.Name)
+	u, _ := user.Current()
+	b64 := middlewares.B64Encode(u.Username)
 	return b64
 }
 

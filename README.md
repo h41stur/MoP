@@ -8,20 +8,30 @@ This project will still undergo several updates and implementations along the wa
 
 ## Running the Project
 
-Before building the server and agent, make the appropriate configurations in the Config package (config/config.go), such as:
+1. Before building the server and agent, make the appropriate configurations in the Config package (config/config.go), such as:
 
 - Server
 - Hostname
 
-It is also necessary to start the MySQL database Docker by executing the sql/start-db.sh script.
+2. It is also necessary to start the MySQL database Docker by executing the sql/start-db.sh script.
 
 ```bash
+cd sql
 ./create-db.sh
 ```
 
+3. Generate the certificates from TLS communication.
+
 ```bash
-go build server/MoP.go
+cd server/resources
+./generate-cert.sh
+```
+
+4. Compile the server.
+
+```bash
 cd server
+go build MoP.go
 ./Mop
 ```
 
@@ -46,7 +56,7 @@ To build agents to Linux and Windows machines on MoP terminal:
 MoP> build <name>
 ```
 
-This command will auto build the agents and put them ina a file server at http(s)://server/downloads/  (default name "agent").
+This command will auto build the agents and put them ina a file server at https://server/downloads/  (default name "agent").
 
 ## Commands
 
@@ -57,7 +67,7 @@ This command will auto build the agents and put them ina a file server at http(s
 
 		alias <alias>: set an alias to an agent when one that agent is selected.
 
-		build <name>: build Linux and Windows agents and put them on a File Server at http(s)://server/downloads/ (default name "agent").
+		build <name>: build Linux and Windows agents and put them on a File Server at https://server/downloads/ (default name "agent").
 
 		help: show this help.
 	

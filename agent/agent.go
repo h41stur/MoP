@@ -5,9 +5,11 @@ import (
 	"MoP/src/models"
 	"MoP/src/requests"
 	"crypto/md5"
+	"crypto/tls"
 	"encoding/hex"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/user"
 	"runtime"
@@ -27,6 +29,9 @@ func init() {
 }
 
 func main() {
+
+	// desabilita checagem de certificado
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	go imAlive(Agent)
 
