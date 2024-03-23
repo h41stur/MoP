@@ -69,7 +69,7 @@ func generateName() models.NewAgent {
 		log.Fatal("")
 	}
 
-	Agent.SO = runtime.GOOS
+	Agent.OS = runtime.GOOS
 	Agent.Arch = runtime.GOARCH
 
 	hasher := md5.New()

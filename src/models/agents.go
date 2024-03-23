@@ -11,7 +11,7 @@ type Agent struct {
 	Name      string    `json:"name,omitempty"`
 	Username  string    `json:"username,omitempty"`
 	Alias     string    `json:"alias,omitempty"`
-	SO        string    `json:"so,omitempty"`
+	OS        string    `json:"os,omitempty"`
 	Arch      string    `json:"arch,omitempty"`
 	Hostname  string    `json:"hostname,omitempty"`
 	Ip        string    `json:"ip,omitempty"`
@@ -34,7 +34,7 @@ type File struct {
 type NewAgent struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
-	SO       string `json:"so"`
+	OS       string `json:"so"`
 	Arch     string `json:"arch"`
 	Hostname string `json:"hostname"`
 }
@@ -64,7 +64,7 @@ func (agent *Agent) validate() error {
 		return errors.New("Empty username")
 	}
 
-	if agent.SO == "" {
+	if agent.OS == "" {
 		return errors.New("Empty SO")
 	}
 
@@ -78,7 +78,7 @@ func (agent *Agent) validate() error {
 func (agent *Agent) format() {
 	agent.Name = strings.TrimSpace(agent.Name)
 	agent.Username = strings.TrimSpace(agent.Username)
-	agent.SO = strings.TrimSpace(agent.SO)
+	agent.OS = strings.TrimSpace(agent.OS)
 	agent.Hostname = strings.TrimSpace(agent.Hostname)
 	agent.Arch = strings.TrimSpace(agent.Arch)
 }

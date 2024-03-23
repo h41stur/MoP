@@ -26,7 +26,7 @@ func Presentation(agent models.NewAgent) {
 	body, _ := json.Marshal(map[string]string{
 		"name":     agent.Name,
 		"username": agent.Username,
-		"so":       agent.SO,
+		"os":       agent.OS,
 		"hostname": agent.Hostname,
 		"arch":     agent.Arch,
 	})
