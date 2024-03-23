@@ -85,6 +85,7 @@ func killAgent() {
 // cli no terminal
 func cli() {
 	for {
+
 		if selectedAgent != "" {
 			messages.RedBold.Print(term)
 		} else {
@@ -110,6 +111,14 @@ func cli() {
 				}
 			} else {
 				switch baseCommand {
+				case "exit":
+					if selectedAgent != "" {
+						selectedAgent = ""
+						term = fmt.Sprintf("[[ Master of Puppets %s ]]>>> ", config.Load().Hostname)
+					} else {
+						messages.OkMessage("Good Bye!")
+						os.Exit(0)
+					}
 				case "help":
 					fmt.Println(commands.Help())
 				case "alias":
@@ -163,6 +172,13 @@ func cli() {
 				case "persist":
 					if selectedAgent != "" {
 						commands.CommandHandler(selectedAgent, command)
+					} else {
+						messages.SelectAgentMessage()
+					}
+				case "shell":
+					if selectedAgent != "" {
+						commands.CommandHandler(selectedAgent, command)
+						commands.Shell(selectedAgent, slicedCommand)
 					} else {
 						messages.SelectAgentMessage()
 					}

