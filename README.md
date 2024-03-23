@@ -88,6 +88,8 @@ This command will auto build the agents and put them ina a file server at https:
 
 		screenshot: take a screenshot from agent machine.
 
+		shell [port]: initiate a TCP reverse shell listening on informated port (default 8081). (very easy to detect and not recomended)
+
 		show history: list the command history when one agent is selected.
 
 		sleep <time seconds>: change the sleep time before send response to server (default 10).
