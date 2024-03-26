@@ -45,6 +45,25 @@ type PostCommandMessage struct {
 	Resp    string `json:"resp"`
 }
 
+var Modules = map[string]map[string]map[string]string{
+	"Windows": {
+		"Local Privilege Escalation": {
+			"PowerUp": "PowerUp aims to be a clearinghouse of common Windows privilege escalation vectors that rely on misconfigurations.",
+		},
+		"Domain Enumeration": {
+			"PowerView": "PowerView is a PowerShell tool to gain network situational awareness on Windows domains. It contains a set of pure-PowerShell replacements for various windows \"net *\" commands, which utilize PowerShell AD hooks and underlying Win32 API functions to perform useful Windows domain functionality.",
+			"PowerView_dev": "Alternative to PowerView",
+			"PowerView_2022": "Alternative to PowerView with support to Windows Server 2022",
+			"SharpHound": "A BloodHound PowerShell collector",
+		},
+	},
+	"Linux": {
+		"": {
+			"": "",
+		},
+	},
+}
+
 
 func (agent *Agent) Prepare() error {
 	if err := agent.validate(); err != nil {

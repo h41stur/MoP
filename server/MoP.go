@@ -155,6 +155,10 @@ func cli() {
 					} else {
 						messages.SelectAgentMessage()
 					}
+				case "use":
+					if selectedAgent != "" {
+						commands.CommandHandler(selectedAgent, command)
+					}
 				case "download":
 					if selectedAgent != "" {
 						commands.DownloadFile(selectedAgent, slicedCommand)

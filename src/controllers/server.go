@@ -4,11 +4,13 @@ package controllers
 import (
 	"MoP/src/db"
 	"MoP/src/messages"
+	"MoP/src/models"
 	"MoP/src/repos"
 	"MoP/src/responses"
 	"encoding/base64"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -113,7 +115,7 @@ func AgentsToKill() []int {
 		if td > 5 {
 			agetnsToKill = append(agetnsToKill, int(agent.ID))
 		}
-		
+
 	}
 
 	return agetnsToKill
@@ -148,7 +150,6 @@ func SendCommand(ID uint64, command string) {
 	repo := repos.AgentRepo(db)
 	repo.Command(ID, command)
 }
-
 
 func SendFile(ID uint64, filePath string, fileName string) error {
 	fileOpened, err := os.ReadFile(filePath)
@@ -188,4 +189,24 @@ func ReqFile(ID uint64, filePath string, fileName string, action string) error {
 
 	return nil
 
+}
+
+func GetModules() {
+	keys := make([]string, 0, len(models.Modules))
+	for k := range models.Modules {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		fmt.Println()
+		messages.Green.Println(k)
+		for module, drop := range models.Modules[k] {
+			messages.Yellow.Printf("\n\t- %s:\n", module)
+			for dropper, description := range drop {
+				fmt.Printf("\n\t\t%s: %s\n", dropper, description)
+			}
+			
+		}
+		fmt.Println()
+	}
 }
