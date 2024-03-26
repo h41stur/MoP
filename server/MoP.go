@@ -34,7 +34,7 @@ func main() {
 	// carrega as rotas do pacote router
 	r := router.Generate()
 	// rota para o file server que conterá os agentes compilados
-	r.PathPrefix("/downloads/").Handler(http.StripPrefix("/downloads/", http.FileServer(http.Dir("../agents"))))
+	r.PathPrefix("/drop/").Handler(http.StripPrefix("/drop/", http.FileServer(http.Dir("../drop"))))
 
 	messages.Banner(config.Hostname)
 

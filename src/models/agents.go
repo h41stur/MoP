@@ -34,7 +34,7 @@ type File struct {
 type NewAgent struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
-	OS       string `json:"so"`
+	OS       string `json:"os"`
 	Arch     string `json:"arch"`
 	Hostname string `json:"hostname"`
 }
@@ -57,19 +57,19 @@ func (agent *Agent) Prepare() error {
 
 func (agent *Agent) validate() error {
 	if agent.Name == "" {
-		return errors.New("Empty name")
+		return errors.New("empty name")
 	}
 
 	if agent.Username == "" {
-		return errors.New("Empty username")
+		return errors.New("empty username")
 	}
 
 	if agent.OS == "" {
-		return errors.New("Empty SO")
+		return errors.New("empty SO")
 	}
 
 	if agent.Hostname == "" {
-		return errors.New("Empty hostname")
+		return errors.New("empty hostname")
 	}
 
 	return nil

